@@ -1,3 +1,1 @@
-# projects
-
-Course task 
+# Course project
