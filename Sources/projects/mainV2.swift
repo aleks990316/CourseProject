@@ -12,7 +12,12 @@ struct Dictionaries {
 
     let mouse = ["esp": "Ratón",
                  "rus": "Мышь",
-                  "fr": "La souris"]           
+                  "fr": "La souris"] 
+
+    var arrayOfDictionaries: <<String,String>> = [] 
+
+    arrayOfDictionaries.append(dictionaries.cat, dictionaries.dog, dictionaries.mouse)
+    print(arrayOfDictionaries)      
 }
 
 
