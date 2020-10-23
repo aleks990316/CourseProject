@@ -3,8 +3,5 @@
 /Packages
 /*.xcodeproj
 xcuserdata/
-/.vscode
 /docker
 /test_tasks
-/Tests
-/someUse
