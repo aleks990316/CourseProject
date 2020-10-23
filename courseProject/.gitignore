@@ -1,0 +1,10 @@
+.DS_Store
+/.build
+/Packages
+/*.xcodeproj
+xcuserdata/
+/.vscode
+/docker
+/test_tasks
+/Tests
+/someUse
