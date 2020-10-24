@@ -3,10 +3,7 @@
 ### Сборка проекта
 > 
     git clone https://github.com/KabStas/CourseProject
-    cd CourseProject
-    cd courseProject
-    cd Sources
-    cd courseProject
+    cd CourseProject/courseProject/Sources/courseProject
     swift build 
 
 ### Запуск проекта
