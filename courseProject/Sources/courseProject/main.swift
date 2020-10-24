@@ -77,15 +77,17 @@ struct Run: ParsableCommand {
 
     func run() throws {
         
-        if key == nil && language == nil {
-            outputtingResultsWithNoArgs()
-        } else if key != nil && language == nil {
-            outputtingResultsForKey (key: key!)    
-        } else if key == nil && language != nil { 
-            outputtingResultsForLanguage (language: language!)
-        } else if key != nil && language != nil {
-            outputtingResultsForKeyAndLanguage(key: key!, language: language!)
-        } 
+        if let finalKey = key {
+            if let finalLanguage = language { 
+               outputtingResultsForKeyAndLanguage(key: finalKey, language: finalLanguage) 
+            } else {
+                outputtingResultsForKey (key: finalKey)
+            }
+        } else if let finalLanguage = language {
+            outputtingResultsForLanguage (language: finalLanguage)
+        } else {
+            outputtingResultsWithNoArgs() 
+        }
     }
 }
 
