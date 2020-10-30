@@ -1,9 +1,10 @@
 import Foundation
 import ArgumentParser
 
-let path = "dict.json" /*Bundle.main.path( forResource: "dict", ofType: "json") ?? "dict.json"*/
+let path = Bundle.main.path( forResource: "dict", ofType: "json") ?? "dict.json"
 var dictionaries: [String: [String: String]] = [:]
 let decoder = JSONDecoder()
+let encoder = JSONEncoder()
 
 if let json = FileManager.default.contents(atPath: path) { 
     dictionaries = (try? decoder.decode([String: [String: String]].self, from: json)) ?? [:]
@@ -65,30 +66,113 @@ func outputtingResultsForKeyAndLanguage (key: String, language: String) {
         } 
     }
     print("Not found") 
-}     
+}  
 
-struct Run: ParsableCommand {
-    
-    @Option(name: .shortAndLong, help: "A word to translate")
-    var key: String?
-    
-    @Option(name: .shortAndLong, help: "A language to choose")
-    var language: String?
+func addingValuesToDictionary (addingWord: String, key: String, language: String) -> 
+    [String: [String: String]] {
 
-    func run() throws {
-        
-        if let finalKey = key {
-            if let finalLanguage = language { 
-               outputtingResultsForKeyAndLanguage(key: finalKey, language: finalLanguage) 
-            } else {
-                outputtingResultsForKey (key: finalKey)
-            }
-        } else if let finalLanguage = language {
-            outputtingResultsForLanguage (language: finalLanguage)
-        } else {
-            outputtingResultsWithNoArgs() 
+    var newWord: [String: String] = dictionaries[key] ?? [:]
+    newWord[language] = addingWord
+    dictionaries[key] = newWord
+    return dictionaries
+}
+
+func deletingValuesFromDictionary (language: String) -> [String: [String: String]] {
+
+    for (word, translations) in dictionaries {
+        var  translations = translations
+        translations[language] = nil
+        dictionaries[word] = translations
+    } 
+    return dictionaries
+}
+
+func deletingValuesFromDictionary (key: String, language: String) -> 
+    [String: [String: String]] {
+
+    var translations = dictionaries[key] ?? [:]
+    translations[language] = nil
+    dictionaries[key] = translations
+    return dictionaries
+}
+
+func encodingToJsonWithWritingToFile (dictionaries: [String: [String: String]]) {
+
+    encoder.outputFormatting = .prettyPrinted
+    let json = (try? encoder.encode(dictionaries))
+    guard let path = Bundle.module.url(forResource: "dict", withExtension: "json") else {return}
+    try? json?.write(to: path)
+    //print(path)
+}
+
+enum Action {
+
+    case search
+    case update
+    case delete
+    case anyOtherCase
+    
+    init(_ string: String) throws {
+        if string == "search" {
+            self = .search
+        } else if string == "update" {
+            self = .update
+        } else if string == "delete" {
+            self = .delete
+        } else { 
+            self = .anyOtherCase
         }
     }
 }
 
+struct Run: ParsableCommand {
+    
+    @Argument(help: "search, update or delete", transform: Action.init)
+    var action: Action
+    @Argument(help: "chosen word to update") 
+    var word: String?
+    @Option(name: .shortAndLong, help: "A word to translate")
+    var key: String?
+    @Option(name: .shortAndLong, help: "A language to choose")
+    var language: String?   
+
+    func run() throws {
+        
+        switch action {
+        case .search:
+            if let finalKey = key {
+                if let finalLanguage = language { 
+                outputtingResultsForKeyAndLanguage(key: finalKey, language: finalLanguage) 
+                } else {
+                    outputtingResultsForKey (key: finalKey)
+                }
+            } else if let finalLanguage = language {
+                outputtingResultsForLanguage (language: finalLanguage)
+            } else {
+                outputtingResultsWithNoArgs() 
+            }
+        case .update:
+            if let finalKey = key, let finalLanguage = language, let finalWord = word {
+                dictionaries = addingValuesToDictionary (addingWord: finalWord, key: finalKey, 
+                    language: finalLanguage)
+                encodingToJsonWithWritingToFile (dictionaries: dictionaries)
+            }
+        case .delete:
+            if let finalKey = key {
+                if let finalLanguage = language { 
+                    dictionaries = deletingValuesFromDictionary (key: finalKey, language: finalLanguage)
+                    encodingToJsonWithWritingToFile (dictionaries: dictionaries)
+                } else {
+                    dictionaries[finalKey] = nil
+                    encodingToJsonWithWritingToFile (dictionaries: dictionaries)           
+                }
+            } else if let finalLanguage = language {
+                dictionaries = deletingValuesFromDictionary (language: finalLanguage)
+                encodingToJsonWithWritingToFile (dictionaries: dictionaries)
+            }          
+        default:
+            return
+        }
+    }
+}
 Run.main()
