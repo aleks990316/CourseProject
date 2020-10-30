@@ -16,5 +16,4 @@
     OPTIONS:
     -k, --key <key>             A word to translate
     -l, --language <language>   A language to choose
-    
     -h, --help                  Show help information
