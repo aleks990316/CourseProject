@@ -105,7 +105,7 @@ func encodingToJsonWithWritingToFile (dictionaries: [String: [String: String]]) 
     //print(path)
 }
 
-enum Action {
+enum Action: String, ExpressibleByArgument {
 
     case search, update, delete
 }

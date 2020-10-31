@@ -10,6 +10,10 @@
 > 
     
     USAGE: swift run courseProject <action> [<word>] [--key <key>] [--language <language>]
+
+    ARGUMENTS:
+    <action>                search, update or delete 
+    <word>                  chosen word to update 
     
     ARGUMENTS:
     <action>                search, update or delete 
