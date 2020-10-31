@@ -105,29 +105,14 @@ func encodingToJsonWithWritingToFile (dictionaries: [String: [String: String]]) 
     //print(path)
 }
 
-enum Action {
+enum Action: String, ExpressibleByArgument {
 
-    case search
-    case update
-    case delete
-    case anyOtherCase
-    
-    init(_ string: String) throws {
-        if string == "search" {
-            self = .search
-        } else if string == "update" {
-            self = .update
-        } else if string == "delete" {
-            self = .delete
-        } else { 
-            self = .anyOtherCase
-        }
-    }
+    case search, update, delete
 }
 
 struct Run: ParsableCommand {
     
-    @Argument(help: "search, update or delete", transform: Action.init)
+    @Argument(help: "search, update or delete")
     var action: Action
     @Argument(help: "chosen word to update") 
     var word: String?
@@ -170,8 +155,6 @@ struct Run: ParsableCommand {
                 dictionaries = deletingValuesFromDictionary (language: finalLanguage)
                 encodingToJsonWithWritingToFile (dictionaries: dictionaries)
             }          
-        default:
-            return
         }
     }
 }
