@@ -19,3 +19,4 @@
     -k, --key <key>             A word to translate
     -l, --language <language>   A language to choose
     -h, --help                  Show help information
+Добавлена библиотека PrettyColors, которая позволяет менять цвет и стиль шрифта консольного вывода. Тем самым, можно удобно разделять язык и перевод с этого языка.
